@@ -63,6 +63,7 @@ contract Raffle is VRFConsumerBaseV2 {
 
     address payable[] private s_players;
     uint256 private s_lastTimeStamp;
+
     address private s_recentWinner;
 
     RaffleState private s_raffleState;
@@ -141,7 +142,7 @@ contract Raffle is VRFConsumerBaseV2 {
             i_callbackGasLimit,
             NUM_WORDS
         );
-        
+
         emit RequestedRaffleWinner(requestId);
     }
 
@@ -176,5 +177,17 @@ contract Raffle is VRFConsumerBaseV2 {
 
     function getRaffleState() external view returns (RaffleState) {
         return s_raffleState;
+    }
+
+    function getRecentWinner() external view returns (address) {
+        return s_recentWinner;
+    }
+
+    function getLengthOfPlayers() external view returns (uint256) {
+        return s_players.length;
+    }
+
+    function getLastTimeStamp() external view returns (uint256) {
+        return s_lastTimeStamp;
     }
 }
