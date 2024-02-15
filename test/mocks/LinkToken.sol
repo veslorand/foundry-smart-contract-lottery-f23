@@ -3,7 +3,7 @@
 // @dev This contract has been adapted to fit with dappTools
 pragma solidity ^0.8.0;
 
-import {ERC20} from "@solmate/tokens/ERC20.sol";
+import {ERC20} from "lib/solmate/src/tokens/ERC20.sol";
 
 interface ERC677Receiver {
     function onTokenTransfer(

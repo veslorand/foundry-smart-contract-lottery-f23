@@ -71,6 +71,7 @@ contract Raffle is VRFConsumerBaseV2 {
 
     event EnteredRaffle(address indexed player);
     event PickedWinner(address indexed winner);
+    event RequestedRaffleWinner(uint256 indexed requestId);
 
     constructor(
         uint256 entranceFee,
@@ -112,7 +113,7 @@ contract Raffle is VRFConsumerBaseV2 {
      * 4. Implicity, your subscription is funded with LINK.
      */
 
-    function checkUpkepp(
+    function checkUpkeep(
         bytes memory
     ) public view returns (bool upkeepNeeded, bytes memory /* performData */) {
         bool timeHasPassed = (block.timestamp - s_lastTimeStamp) >= i_interval;
@@ -124,7 +125,7 @@ contract Raffle is VRFConsumerBaseV2 {
     }
 
     function performUpkeep(bytes calldata /* performData */) external {
-        (bool upkeepNeeded, ) = checkUpkepp("");
+        (bool upkeepNeeded, ) = checkUpkeep("");
         if (!upkeepNeeded) {
             revert Raffle__UpkeepNotNeeded(
                 address(this).balance,
@@ -133,13 +134,15 @@ contract Raffle is VRFConsumerBaseV2 {
             );
         }
         s_raffleState = RaffleState.CALCULATING;
-        i_vfrCoordinator.requestRandomWords(
+        uint256 requestId = i_vfrCoordinator.requestRandomWords(
             i_gasLane,
             i_subscriptionId,
             REQUEST_CONFIRMATIONS,
             i_callbackGasLimit,
             NUM_WORDS
         );
+        
+        emit RequestedRaffleWinner(requestId);
     }
 
     function fulfillRandomWords(
