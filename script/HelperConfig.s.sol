@@ -15,8 +15,11 @@ contract HelperConfig is Script {
         uint64 subscriptionId;
         uint32 callbackGasLimi;
         address link;
+        uint256 deployerKey;
     }
 
+    uint256 public constant DEFAULT_ANVIL_KEY =
+        0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80;
     NetworkConfig public activeNetworkConfig;
 
     constructor() {
@@ -27,16 +30,17 @@ contract HelperConfig is Script {
         }
     }
 
-    function getSepoliaEthConfig() public pure returns (NetworkConfig memory) {
+    function getSepoliaEthConfig() public view returns (NetworkConfig memory) {
         return
             NetworkConfig({
                 entranceFee: 0.01 ether,
                 interval: 30,
                 vrfCoordinator: 0x8103B0A8A00be2DDC778e6e7eaa21791Cd364625,
                 gasLane: 0x474e34a077df58807dbe9c96d3c009b23b3c6d0cce433e59bbf5b34f823bc56c,
-                subscriptionId: 0,
+                subscriptionId: 1,
                 callbackGasLimi: 500000, // 500,000 gas!,
-                link: 0x779877A7B0D9E8603169DdbD7836e478b4624789
+                link: 0x779877A7B0D9E8603169DdbD7836e478b4624789,
+                deployerKey: vm.envUint("PRIVATE_KEY")
             });
     }
 
@@ -45,7 +49,7 @@ contract HelperConfig is Script {
             return activeNetworkConfig;
         }
 
-        uint96 baseFee = 0.25 ether;    // 0.25 LINK
+        uint96 baseFee = 0.25 ether; // 0.25 LINK
         uint96 gasPriceLink = 1e9 ether; //1 gwei LINK
 
         vm.startBroadcast();
@@ -62,10 +66,10 @@ contract HelperConfig is Script {
                 interval: 30,
                 vrfCoordinator: address(vrfCoordinator),
                 gasLane: 0x474e34a077df58807dbe9c96d3c009b23b3c6d0cce433e59bbf5b34f823bc56c,
-                subscriptionId: 0,
-                callbackGasLimi: 500000,
-                link: address(link)
-                 // 500,000 gas!
+                subscriptionId: 1,
+                callbackGasLimi: 500000, // 500,000 gas!
+                link: address(link),
+                deployerKey: DEFAULT_ANVIL_KEY
             });
     }
 }
